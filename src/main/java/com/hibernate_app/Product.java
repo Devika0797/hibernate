@@ -1,11 +1,10 @@
 package com.hibernate_app;
 
-import org.hibernate.annotations.Target;
-
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table (name = "product")
+@Table (name = "products")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +14,26 @@ public class Product {
     private String title;
     @Column(name = "price")
     private int price;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user_id;
+
+   public User getUser_id() {
+       return user_id;
+   }
+   public void setUser_id(User user_id){
+       this.user_id = user_id;
+   }
+
+   @ManyToMany
+   @JoinTable(
+           name = "products_users",//
+           joinColumns = @JoinColumn(name = "product_id"),
+           inverseJoinColumns = @JoinColumn(name = "user_id")
+   )
+   private List<User> users;
+
 
     public Long getId() {
         return id;
@@ -43,14 +62,8 @@ public class Product {
     public Product() {
     }
 
-    public Product(String title, int price) {
-        this.title = title;
-        this.price = price;
-    }
-
     @Override
-    public String toString() {
-        return String.format("Product [id = %d, title = %s, price = %d]", id, title, price);
-
+    public String toString(){
+        return "Product [" + id + " " + title + " " + user_id.getName() + "]";
     }
 }
